@@ -1,0 +1,40 @@
+{
+  "name": "npm-v0-finder",
+  "description": "Find 0.x.y npm packages by user.",
+  "version": "1.0.0",
+  "author": "Luke Karrys",
+  "bugs": {
+    "url": "https://github.com/lukekarrys/npm-v0-finder/issues"
+  },
+  "homepage": "https://github.com/lukekarrys/npm-v0-finder",
+  "keywords": [
+    "npm",
+    "semver"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukekarrys/npm-v0-finder.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "./node_modules/.bin/moonboots ../../config.js",
+    "ghpages": "git checkout master && git subtree split --prefix _built/ -b gh-pages && git push -f origin gh-pages:gh-pages && git branch -D gh-pages && git push origin master",
+    "commit-built": "git add _built -A && git commit -m \"_built files at `date`\" -n > /dev/null 2>&1; exit 0",
+    "deploy": "npm run build && npm run commit-built && npm run ghpages"
+  },
+  "devDependencies": {
+    "jshint": "^2.5.3",
+    "moonboots-static": "^1.0.0",
+    "precommit-hook": "^1.0.7"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "domify": "^1.3.0",
+    "qs": "^1.2.1",
+    "reqwest": "^1.1.2",
+    "underscore": "^1.6.0"
+  }
+}
