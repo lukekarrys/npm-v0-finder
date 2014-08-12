@@ -58,10 +58,11 @@ function isStable(obj) {
 
 var errorModules = [];
 function reqModule(module, cb) {
+  console.log('requesting', module);
   request({
     url: url + module,
     success: function (resp) {
-      console.log('module', module, resp['dist-tags'].latest);
+      console.log('found', module, resp['dist-tags'].latest);
       appendS('.');
       cb(null, {
         name: module,
@@ -75,7 +76,7 @@ function reqModule(module, cb) {
         console.log('retry', module);
         reqModule(module, cb);
       } else {
-        console.error(module);
+        console.error('error fetching', module);
         cb(null, new Error(module));
       }
     }
