@@ -143,7 +143,7 @@ domready(function () {
         var dividedModules = _.partition(_.reject(results, isError), isStable);
         var v0 = dividedModules[1] || [];
 
-        displayModules('0.x.y', v0, user + ' has no 0.x.y modules! Woo!');
+        displayModules(v0.length + ' modules @ 0.x.y', v0, user + ' has no 0.x.y modules! Woo!');
         displayModules('Could not find', _.pluck(errors, 'message'));
       });
     },
