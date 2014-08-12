@@ -52,7 +52,7 @@ function isError(err) {
 }
 
 function isStable(obj) {
-  return obj && obj.version && obj.version.slice(1) !== '0';
+  return obj && obj.version && obj.version.slice(0, 1) !== '0';
 }
 
 
