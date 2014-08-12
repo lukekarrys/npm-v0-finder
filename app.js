@@ -34,13 +34,14 @@ function appendModule(module) {
 }
 
 function displayModules(head, modules) {
-  if (modules.length === 0) {
-    return;
-  }
   append('<h2>' + head + '</h2>');
-  modules.forEach(function (module) {
-    appendModule(module);
-  });
+  if (modules.length === 0) {
+    appendP('You have no 0.x.y modules! Woo!');
+  } else {
+    modules.forEach(function (module) {
+      appendModule(module);
+    });
+  }
 }
 
 function isError(err) {
@@ -53,7 +54,7 @@ function isStable(obj) {
 
 domready(function () {
   // Start
-  appendP('Fetching modules');
+  appendP('Fetching modules for ' + user);
 
   // Fetch all user modules
   request(userUrl + '?' + qs.stringify(params), function (respText) {
@@ -93,11 +94,9 @@ domready(function () {
     }, function (err, results) {
       var errors = _.filter(results, isError);
       var dividedModules = _.partition(_.reject(results, isError), isStable);
-      //var v1 = dividedModules[0] || [];
       var v0 = dividedModules[1] || [];
 
       displayModules('0.x.y', v0);
-      // displayModules('>=1.x.y', v1);
       displayModules('Could not find', _.pluck(errors, 'message'));
     });
   });
