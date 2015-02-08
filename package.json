@@ -15,6 +15,7 @@
     "underscore": "^1.6.0"
   },
   "devDependencies": {
+    "git-directory-deploy": "^1.0.0",
     "jshint": "^2.5.3",
     "moonboots-static": "^1.0.1",
     "precommit-hook": "^1.0.7"
