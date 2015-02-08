@@ -4,6 +4,6 @@ module.exports = function () {
             main: __dirname + '/app.js',
             resourcePrefix: './'
         },
-        directory: __dirname + '/_built',
+        directory: __dirname + '/_site',
     };
 };
