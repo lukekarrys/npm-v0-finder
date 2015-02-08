@@ -33,7 +33,6 @@
   },
   "scripts": {
     "build": "moonboots config.js",
-    "deploy": "npm run build && git-directory-deploy.sh",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "deploy": "npm run build && git-directory-deploy --directory _dist"
   }
 }
