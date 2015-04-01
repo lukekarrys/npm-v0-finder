@@ -1,22 +1,13 @@
 var domify = require('domify');
-var request = require('reqwest');
-var qs = require('qs');
+var xhr = require('xhr');
 var _ = require('underscore');
 var async = require('async');
 var domready = require('domready');
 
-
 var user = _.escape((window.location.hash || '#').slice(1) || '');
-var url = 'http://www.corsproxy.com/registry.npmjs.org/';
-var userUrl = url + '-/_view/browseAuthors';
-var params = {
-  group_level: 3,
-  startkey: '["' + user + '"]',
-  endkey: '["' + user + '",{}]',
-  skip: '0',
-  limit: '1000',
-  stale: 'update_after'
-};
+var proxyUrl = 'http://jsonp.afeld.me/?url=';
+var registryUrl = 'http://registry.npmjs.org/';
+var userUrl = registryUrl + '-/_view/browseAuthors?group_level=3&skip=0&limit=1000&stale=update_after&startkey=["' + user + '"]&endkey=["' + user + '",{}]';
 
 function append(str) {
   document.body.appendChild(domify(str));
@@ -60,17 +51,9 @@ function isStable(obj) {
 var errorModules = [];
 function reqModule(module, cb) {
   console.log('requesting', module);
-  request({
-    url: url + module,
-    success: function (resp) {
-      console.log('found', module, resp['dist-tags'].latest);
-      appendS('.');
-      cb(null, {
-        name: module,
-        version: resp['dist-tags'].latest
-      });
-    },
-    error: function () {
+  xhr(proxyUrl + encodeURIComponent(registryUrl + module),
+  function (err, _resp, body) {
+    if (err) {
       if (!_.contains(errorModules, module)) {
         // Retry once
         errorModules.push(module);
@@ -80,8 +63,16 @@ function reqModule(module, cb) {
         console.error('error fetching', module);
         cb(null, new Error(module));
       }
+    } else {
+      var resp = JSON.parse(body);
+      console.log('found', module, resp['dist-tags'].latest);
+      appendS('.');
+      cb(null, {
+        name: module,
+        version: resp['dist-tags'].latest
+      });
     }
-   });
+  });
 }
 
 window.goToUser = function goToUser() {
@@ -110,46 +101,44 @@ domready(function () {
   appendP('Fetching modules for ' + user);
 
   // Fetch all user modules
-  request({
-    url: userUrl + '?' + qs.stringify(params),
-    success: function (respText) {
-      var resp;
-      var rows;
-      var modules;
-      
-      try {
-        resp = JSON.parse(respText);
-        rows = resp.rows || [];
-        appendP('Found ' + rows.length + ' modules');
-      } catch (e) {
-        appendP('Found no modules');
-        return;
-      }
-      
-      // Get names of all modules
-      modules = _.compact(rows.map(function (row) {
-        return row.key && row.key[1];
-      }));
-
-      if (modules.length === 0) {
-        return;
-      }
-
-      console.log(modules.length);
-      console.log(modules.join(','));
-
-      // Fetch all module versions
-      async.mapLimit(modules, 2, reqModule, function (err, results) {
-        var errors = _.filter(results, isError);
-        var dividedModules = _.partition(_.reject(results, isError), isStable);
-        var v0 = dividedModules[1] || [];
-
-        displayModules(v0.length + ' modules @ 0.x.y', v0, user + ' has no 0.x.y modules! Woo!');
-        displayModules('Could not find', _.pluck(errors, 'message'));
-      });
-    },
-    error: function () {
-      appendP('Could not find user ' + user);
+  xhr(proxyUrl + encodeURIComponent(userUrl),
+  function (err, _resp, body) {
+    if (err) {
+      return appendP('Error finding user' + user);
     }
+    var resp;
+    var rows;
+    var modules;
+    
+    try {
+      resp = JSON.parse(body);
+      rows = resp.rows || [];
+      appendP('Found ' + rows.length + ' modules');
+    } catch (e) {
+      appendP('Found no modules');
+      return;
+    }
+    
+    // Get names of all modules
+    modules = _.compact(rows.map(function (row) {
+      return row.key && row.key[1];
+    }));
+
+    if (modules.length === 0) {
+      return;
+    }
+
+    console.log(modules.length);
+    console.log(modules.join(','));
+
+    // Fetch all module versions
+    async.mapLimit(modules, 5, reqModule, function (err, results) {
+      var errors = _.filter(results, isError);
+      var dividedModules = _.partition(_.reject(results, isError), isStable);
+      var v0 = dividedModules[1] || [];
+
+      displayModules(v0.length + ' modules @ 0.x.y', v0, user + ' has no 0.x.y modules! Woo!');
+      displayModules('Could not find', _.pluck(errors, 'message'));
+    });
   });
 });
