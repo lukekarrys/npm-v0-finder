@@ -7,7 +7,7 @@
     "url": "https://github.com/lukekarrys/npm-v0-finder/issues"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^1.5.0",
     "domify": "^1.3.0",
     "domready": "^1.0.6",
     "underscore": "^1.6.0",
@@ -15,11 +15,11 @@
   },
   "devDependencies": {
     "beefy": "^2.1.3",
-    "browserify": "^9.0.4",
+    "browserify": "^12.0.1",
     "git-directory-deploy": "^1.0.0",
-    "jshint": "^2.5.3",
-    "moonboots-static": "^1.0.1",
-    "precommit-hook": "^1.0.7"
+    "jshint": "^2.8.0",
+    "moonboots-static": "^2.0.0",
+    "precommit-hook": "^3.0.0"
   },
   "homepage": "https://github.com/lukekarrys/npm-v0-finder",
   "keywords": [
@@ -28,6 +28,10 @@
   ],
   "license": "MIT",
   "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "validate"
+  ],
   "private": true,
   "repository": {
     "type": "git",
@@ -36,6 +40,8 @@
   "scripts": {
     "build": "moonboots config.js",
     "deploy": "npm run build && git-directory-deploy --directory _dist",
-    "start": "beefy app.js"
+    "lint": "jshint .",
+    "start": "beefy app.js",
+    "validate": "npm ls"
   }
 }
