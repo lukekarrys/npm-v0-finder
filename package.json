@@ -21,7 +21,7 @@
     "moonboots-static": "^2.0.0",
     "precommit-hook": "^3.0.0"
   },
-  "homepage": "https://github.com/lukekarrys/npm-v0-finder",
+  "homepage": "http://v0.lukecod.es",
   "keywords": [
     "npm",
     "semver"
@@ -38,7 +38,7 @@
     "url": "https://github.com/lukekarrys/npm-v0-finder.git"
   },
   "scripts": {
-    "build": "moonboots config.js",
+    "build": "moonboots config.js && echo v0.lukecod.es > _dist/CNAME",
     "deploy": "npm run build && git-directory-deploy --directory _dist",
     "lint": "jshint .",
     "start": "beefy app.js",
