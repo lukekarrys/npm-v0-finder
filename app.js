@@ -3,6 +3,7 @@ var xhr = require('xhr');
 var _ = require('underscore');
 var async = require('async');
 var domready = require('domready');
+var log = require('andlog');
 
 var user = _.escape((window.location.hash || '#').slice(1) || '');
 var proxyUrl = 'http://jsonp.afeld.me/?url=';
@@ -50,14 +51,14 @@ function isStable(obj) {
 
 var errorModules = [];
 function reqModule(module, cb) {
-  console.log('requesting', module);
+  log('requesting', module);
   xhr(proxyUrl + encodeURIComponent(registryUrl + module),
   function (err, _resp, body) {
     if (err) {
       if (!_.contains(errorModules, module)) {
         // Retry once
         errorModules.push(module);
-        console.log('retry', module);
+        log('retry', module);
         reqModule(module, cb);
       } else {
         console.error('error fetching', module);
@@ -65,7 +66,7 @@ function reqModule(module, cb) {
       }
     } else {
       var resp = JSON.parse(body);
-      console.log('found', module, resp['dist-tags'].latest);
+      log('found', module, resp['dist-tags'].latest);
       appendS('.');
       cb(null, {
         name: module,
@@ -109,7 +110,7 @@ domready(function () {
     var resp;
     var rows;
     var modules;
-    
+
     try {
       resp = JSON.parse(body);
       rows = resp.rows || [];
@@ -118,7 +119,7 @@ domready(function () {
       appendP('Found no modules');
       return;
     }
-    
+
     // Get names of all modules
     modules = _.compact(rows.map(function (row) {
       return row.key && row.key[1];
@@ -128,8 +129,8 @@ domready(function () {
       return;
     }
 
-    console.log(modules.length);
-    console.log(modules.join(','));
+    log(modules.length);
+    log(modules.join(','));
 
     // Fetch all module versions
     async.mapLimit(modules, 5, reqModule, function (err, results) {
