@@ -3,7 +3,7 @@ var xhr = require('xhr');
 var _ = require('underscore');
 var async = require('async');
 var domready = require('domready');
-var log = require('andlog');
+var logger = require('andlog');
 
 var user = _.escape((window.location.hash || '#').slice(1) || '');
 var proxyUrl = 'http://jsonp.afeld.me/?url=';
@@ -51,14 +51,14 @@ function isStable(obj) {
 
 var errorModules = [];
 function reqModule(module, cb) {
-  log('requesting', module);
+  logger.log('requesting', module);
   xhr(proxyUrl + encodeURIComponent(registryUrl + module),
   function (err, _resp, body) {
     if (err) {
       if (!_.contains(errorModules, module)) {
         // Retry once
         errorModules.push(module);
-        log('retry', module);
+        logger.log('retry', module);
         reqModule(module, cb);
       } else {
         console.error('error fetching', module);
@@ -66,7 +66,7 @@ function reqModule(module, cb) {
       }
     } else {
       var resp = JSON.parse(body);
-      log('found', module, resp['dist-tags'].latest);
+      logger.log('found', module, resp['dist-tags'].latest);
       appendS('.');
       cb(null, {
         name: module,
@@ -129,8 +129,8 @@ domready(function () {
       return;
     }
 
-    log(modules.length);
-    log(modules.join(','));
+    logger.log(modules.length);
+    logger.log(modules.join(','));
 
     // Fetch all module versions
     async.mapLimit(modules, 5, reqModule, function (err, results) {
