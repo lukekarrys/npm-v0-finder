@@ -17,9 +17,13 @@
     "beefy": "^2.1.3",
     "browserify": "^12.0.1",
     "git-directory-deploy": "^1.0.0",
-    "jshint": "^2.8.0",
+    "jshint": "^2.9.1-rc1",
     "moonboots-static": "^2.0.0",
     "precommit-hook": "^3.0.0"
+  },
+  "engines": {
+    "node": "^5.0.0",
+    "npm": "^3.0.0"
   },
   "homepage": "http://v0.lukecod.es",
   "keywords": [
@@ -39,9 +43,12 @@
   },
   "scripts": {
     "build": "moonboots config.js && echo v0.lukecod.es > _dist/CNAME",
-    "deploy": "npm run build && git-directory-deploy --directory _dist",
+    "codeship-setup": "npm run npm-version && npm install && npm run build",
+    "codeship-test": "npm run lint && npm run validate",
+    "deploy": "git-directory-deploy --directory _site --username lukekarrys --email lukekarrys@gmail.com --repo `cat package.json | jq -r '.repository.url'` --message='--skip-ci'",
     "lint": "jshint .",
+    "npm-version": "npm install -g npm@`cat package.json | jq -r '.engines.npm'`",
     "start": "beefy app.js",
-    "validate": "npm ls"
+    "validate": "npm ls >/dev/null"
   }
 }
