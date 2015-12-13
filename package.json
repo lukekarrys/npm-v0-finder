@@ -39,7 +39,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/lukekarrys/npm-v0-finder.git"
+    "url": "git@github.com:lukekarrys/npm-v0-finder.git"
   },
   "scripts": {
     "build": "moonboots config.js && echo v0.lukecod.es > _dist/CNAME",
