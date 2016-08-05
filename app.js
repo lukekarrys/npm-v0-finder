@@ -1,7 +1,7 @@
 var domify = require('domify');
 var xhr = require('xhr');
 var _ = require('underscore');
-var async = require('async');
+var mapLimit = require('async/mapLimit');
 var domready = require('domready');
 var logger = require('andlog');
 
@@ -133,7 +133,7 @@ domready(function () {
     logger.log(modules.join(','));
 
     // Fetch all module versions
-    async.mapLimit(modules, 5, reqModule, function (err, results) {
+    mapLimit(modules, 5, reqModule, function (err, results) {
       var errors = _.filter(results, isError);
       var dividedModules = _.partition(_.reject(results, isError), isStable);
       var v0 = dividedModules[1] || [];
