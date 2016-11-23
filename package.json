@@ -23,8 +23,7 @@
     "precommit-hook": "^3.0.0"
   },
   "engines": {
-    "node": "^5.0.0",
-    "npm": "^3.0.0"
+    "node": "^6.0.0"
   },
   "homepage": "http://v0.lukecod.es",
   "keywords": [
@@ -44,11 +43,10 @@
   },
   "scripts": {
     "build": "moonboots config.js && echo v0.lukecod.es > _dist/CNAME",
-    "codeship-setup": "npm run npm-version && npm install && npm run build",
+    "codeship-setup": "npm install && npm run build",
     "codeship-test": "npm run lint && npm run validate",
     "deploy": "git-directory-deploy --directory _dist --username lukekarrys --email lukekarrys@gmail.com --repo `cat package.json | jq -r '.repository.url'` --message='--skip-ci'",
     "lint": "jshint .",
-    "npm-version": "npm install -g npm@`cat package.json | jq -r '.engines.npm'`",
     "start": "beefy app.js",
     "validate": "npm ls >/dev/null"
   }
