@@ -47,7 +47,7 @@
     "codeship-test": "npm run lint && npm run validate",
     "deploy": "git-directory-deploy --directory _dist --username lukekarrys --email lukekarrys@gmail.com --repo `cat package.json | jq -r '.repository.url'` --message='--skip-ci'",
     "lint": "jshint .",
-    "start": "beefy app.js",
+    "start": "beefy app.js --index=./page.html",
     "validate": "npm ls >/dev/null"
   }
 }
