@@ -19,6 +19,7 @@
     "browserify": "^13.1.0",
     "git-directory-deploy": "^1.5.0",
     "jshint": "^2.9.2",
+    "json": "^9.0.4",
     "moonboots-static": "^2.0.1",
     "precommit-hook": "^3.0.0"
   },
@@ -45,7 +46,7 @@
     "build": "moonboots config.js && echo v0.lukecod.es > _dist/CNAME",
     "codeship-setup": "npm install && npm run build",
     "codeship-test": "npm run lint && npm run validate",
-    "deploy": "git-directory-deploy --directory _dist --username lukekarrys --email lukekarrys@gmail.com --repo `cat package.json | jq -r '.repository.url'` --message='--skip-ci'",
+    "deploy": "git-directory-deploy --directory _dist --username lukekarrys --email lukekarrys@gmail.com --repo `cat package.json | json repository.url` --message='--skip-ci'",
     "lint": "jshint .",
     "start": "beefy app.js --index=./page.html",
     "validate": "npm ls >/dev/null"
