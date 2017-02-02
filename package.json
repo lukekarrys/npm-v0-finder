@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "andlog": "^1.0.0",
-    "async": "^2.0.1",
     "domify": "^1.4.0",
     "domready": "^1.0.8",
+    "query-string": "^4.3.1",
     "underscore": "^1.8.3",
     "xhr": "^2.2.2"
   },

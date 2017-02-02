@@ -1,14 +1,11 @@
 var domify = require('domify')
 var xhr = require('xhr')
 var _ = require('underscore')
-var mapLimit = require('async/mapLimit')
+var qs = require('query-string')
 var domready = require('domready')
 var logger = require('andlog')
 
 var user = _.escape((window.location.hash || '#').slice(1) || '')
-var proxyUrl = 'http://jsonp.afeld.me/?url='
-var registryUrl = 'http://registry.npmjs.org/'
-var userUrl = registryUrl + '-/_view/browseAuthors?group_level=3&skip=0&limit=1000&stale=update_after&startkey=["' + user + '"]&endkey=["' + user + '",{}]'
 
 function append (str) {
   document.body.appendChild(domify(str))
@@ -18,12 +15,8 @@ function appendP (str) {
   append('<p>' + str + '</p>')
 }
 
-function appendS (str) {
-  append('<span>' + str + '</span>')
-}
-
-function appendModule (module) {
-  appendP(_.isString(module) ? module : module.name + '@' + '<strong>' + module.version + '</strong>')
+function appendModule (m) {
+  appendP(m.package.name + '@' + '<strong>' + m.package.version + '</strong>')
 }
 
 function displayModules (head, modules, msg) {
@@ -40,37 +33,27 @@ function displayModules (head, modules, msg) {
   }
 }
 
-function isError (err) {
-  return err instanceof Error
+function isStable (m) {
+  return m.package.version.slice(0, 1) !== '0'
 }
 
-function isStable (obj) {
-  return obj && obj.version && obj.version.slice(0, 1) !== '0'
+function fetchUserUrl (user, size, offset) {
+  return 'http://registry.npmjs.com/-/v1/search?text=maintainer:' + user + '&' + qs.stringify({ size: size, from: offset })
 }
 
-var errorModules = []
-function reqModule (module, cb) {
-  logger.log('requesting', module)
-  xhr(proxyUrl + encodeURIComponent(registryUrl + module),
-  function (err, _resp, body) {
-    if (err) {
-      if (!_.contains(errorModules, module)) {
-        // Retry once
-        errorModules.push(module)
-        logger.log('retry', module)
-        reqModule(module, cb)
-      } else {
-        console.error('error fetching', module)
-        cb(null, new Error(module))
-      }
+function fetchUser (user, found, cb) {
+  var size = 250
+  xhr(fetchUserUrl(user, size, found.length), function (err, __, body) {
+    if (err) return cb(err)
+    body = JSON.parse(body)
+    logger.log('Found', body.objects.length)
+    logger.log('First', body.objects[0].package.name)
+    logger.log('Last', body.objects[body.objects.length - 1].package.name)
+    found = found.concat(body.objects)
+    if (found.length < body.total) {
+      fetchUser(user, found, cb)
     } else {
-      var resp = JSON.parse(body)
-      logger.log('found', module, resp['dist-tags'].latest)
-      appendS('.')
-      cb(null, {
-        name: module,
-        version: resp['dist-tags'].latest
-      })
+      cb(null, found)
     }
   })
 }
@@ -100,45 +83,24 @@ domready(function () {
   appendP('Fetching modules for ' + user)
 
   // Fetch all user modules
-  xhr(proxyUrl + encodeURIComponent(userUrl),
-  function (err, _resp, body) {
+  fetchUser(user, [],
+  function (err, modules) {
     if (err) {
+      logger.log(err)
       return appendP('Error finding user' + user)
     }
-    var resp
-    var rows
-    var modules
 
-    try {
-      resp = JSON.parse(body)
-      rows = resp.rows || []
-      appendP('Found ' + rows.length + ' modules')
-    } catch (e) {
+    if (modules.length === 0) {
       appendP('Found no modules')
       return
     }
 
-    // Get names of all modules
-    modules = _.compact(rows.map(function (row) {
-      return row.key && row.key[1]
-    }))
-
-    if (modules.length === 0) {
-      return
-    }
-
     logger.log(modules.length)
-    logger.log(modules.join(','))
+    modules.forEach(function (m) { logger.log(m.package) })
 
-    // Fetch all module versions
-    mapLimit(modules, 5, reqModule, function (err, results) {
-      if (err) console.error(err)
-      var errors = _.filter(results, isError)
-      var dividedModules = _.partition(_.reject(results, isError), isStable)
-      var v0 = dividedModules[1] || []
+    var dividedModules = _.partition(modules, isStable)
+    var v0 = dividedModules[1] || []
 
-      displayModules(v0.length + ' modules @ 0.x.y', v0, user + ' has no 0.x.y modules! Woo!')
-      displayModules('Could not find', _.pluck(errors, 'message'))
-    })
+    displayModules(v0.length + ' modules @ 0.x.y', v0, user + ' has no 0.x.y modules! Woo!')
   })
 })
