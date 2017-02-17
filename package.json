@@ -18,9 +18,9 @@
     "beefy": "^2.1.8",
     "browserify": "^14.0.0",
     "git-directory-deploy": "^1.5.0",
+    "git-validate": "^2.2.2",
     "json": "^9.0.4",
     "moonboots-static": "^2.0.1",
-    "precommit-hook": "^3.0.0",
     "standard": "^8.6.0"
   },
   "engines": {
