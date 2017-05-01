@@ -2,7 +2,6 @@ npm-v0-finder
 =============
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/lukekarrys/npm-v0-finder.svg)](https://greenkeeper.io/)
-
 [ ![Codeship Status for lukekarrys/npm-v0-finder](https://codeship.com/projects/67fe4630-841d-0133-ba02-7ecaf0f6959d/status?branch=master)](https://codeship.com/projects/121872)
 
 http://v0.lukecod.es
