@@ -42,7 +42,7 @@
     "url": "git@github.com:lukekarrys/npm-v0-finder.git"
   },
   "scripts": {
-    "build": "moonboots config.js && echo v0.lukecod.es > _dist/CNAME",
+    "build": "moonboots config.js",
     "lint": "standard",
     "start": "beefy app.js --index=./page.html"
   }
