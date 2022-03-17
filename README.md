@@ -1,21 +1,36 @@
 npm-v0-finder
 =============
 
-[v0.lukecod.es](https://v0.lukecod.es)
+## Ban ##  All ##  Boot & ## Remove ## Batch & ##D
+ Delete ## All ## Admin ## Users or ## anonymous ## User ## info #s
+Details.
 
-Find 0.x.y npm packages by user.
-
-Crappy first draft: [requirebin](http://requirebin.com/?gist=lukekarrys/bada2aad1af6b6de5618) and [gist](https://gist.github.com/lukekarrys/bada2aad1af6b6de5618).
-
-## Setup
+## Setup ## Grant ## Superadmin ## Remove ## admin/Users/://:===Log_out& 
+## Run
+## Check
+## User©
+## Check©
+## Devices
+## Check ##Factory ##Manuals
+##install
 
 * `npm install`
 
-## Dev
-
 * `npm start`
 
-## Build/Deploy
+##Start
 
+## Build/Deploy
+## https//:m.Firebase.apk
+## Deploy=*'==='
 * `npm run build`
+##run
+##Build
 * `npm run deploy`
+## Deploy*'==='
+## run & ## NPM ## install
+## Go.
+## "https:://m.NPM.apk . "
+## Deploy=*'===' ===## Run 
+## Update== ## info===*'=====' ===## Keep ===## Security.yml
+## Update==info
